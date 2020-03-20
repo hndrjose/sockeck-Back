@@ -11,7 +11,7 @@ export default class Mysql {
       console.log('Clase inicializada');
       
       this.cnn = mysql.createConnection({
-        host: '35.202.222.43', // Localhost,  35.202.222.43
+        host: '34.66.212.9', // Localhost,  35.202.222.43
         user: 'root', // root
         password: 'systemas', // Ceutec-19, systemas
         database: 'mypimesdb', //

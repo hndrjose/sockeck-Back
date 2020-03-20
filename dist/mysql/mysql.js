@@ -6,7 +6,7 @@ class Mysql {
         this.conectado = false;
         console.log('Clase inicializada');
         this.cnn = mysql.createConnection({
-            host: '35.202.222.43',
+            host: '34.66.212.9',
             user: 'root',
             password: 'systemas',
             database: 'mypimesdb',
