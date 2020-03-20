@@ -20,7 +20,7 @@ const server = server_1.default.instance;
 server.app.use(body_parser_1.default.urlencoded({ extended: true }));
 server.app.use(body_parser_1.default.json());
 // CORS
-server.app.use(cors_1.default({ origin: 'https://tesis-front.web.app', credentials: true }));
+server.app.use(cors_1.default({ origin: 'https://3000-dot-11313237-dot-devshell.appspot.com/', credentials: true }));
 // Rutas de servicios
 server.app.use('/', router_1.default);
 server.app.use('/', usuarios_1.default);
