@@ -1,0 +1,36 @@
+{
+    "name": "socket-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dist": "copyfiles --up 1 src/public/*.* dist",
+        "build": "tsc && npm run dist"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/bluebird": "^3.5.29",
+        "@types/express-fileupload": "^1.1.2",
+        "@types/nodemailer": "^6.4.0",
+        "@types/nodemailer-direct-transport": "^1.0.31",
+        "@types/nodemailer-smtp-transport": "^2.7.4",
+        "body-parser": "^1.18.3",
+        "cors": "^2.8.4",
+        "express": "^4.16.4",
+        "express-fileupload": "^1.1.6",
+        "mysql": "github:mysqljs/mysql",
+        "nodemailer": "^6.4.2",
+        "serve-index": "^1.9.1",
+        "socket.io": "^2.1.1",
+        "typeorm": "^0.2.22"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.4",
+        "@types/express": "^4.16.0",
+        "@types/mysql": "^2.15.8",
+        "@types/node": "^13.7.0",
+        "@types/socket.io": "^2.1.0"
+    }
+}
