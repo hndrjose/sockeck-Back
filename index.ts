@@ -22,7 +22,7 @@ server.app.use( bodyParser.urlencoded({ extended: true }) );
 server.app.use( bodyParser.json() );
 
 // CORS
-server.app.use( cors({ origin: 'https://3000-dot-11313237-dot-devshell.appspot.com/', credentials: true  }) );
+server.app.use( cors({ origin: '*', credentials: true  }) );
 
 
 // Rutas de servicios

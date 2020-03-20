@@ -11,11 +11,17 @@ export default class Mysql {
       console.log('Clase inicializada');
       
       this.cnn = mysql.createConnection({
-        host: '34.66.212.9', // Localhost,  35.202.222.43
+        host: '35.202.222.43',  //'34.66.212.9', // Localhost,  35.202.222.43
+       // socketPath: '/mypimesdb/tesis-271715:us-central1:mypimesdb',
         user: 'root', // root
         password: 'systemas', // Ceutec-19, systemas
         database: 'mypimesdb', //
         // multipleStatements: true
+
+
+
+
+        
 
 
    });
