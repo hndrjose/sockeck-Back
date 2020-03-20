@@ -22,7 +22,7 @@ server.app.use( bodyParser.urlencoded({ extended: true }) );
 server.app.use( bodyParser.json() );
 
 // CORS
-server.app.use( cors({ origin: '*', credentials: true  }) );
+server.app.use( cors());
 
 
 // Rutas de servicios
