@@ -9,8 +9,8 @@ class Mysql {
             // host: '35.223.77.3',  //'34.66.212.9', // Localhost,  35.202.222.43
             socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
             user: 'root',
-            password: 'root',
-            database: 'tesis',
+            password: 'systemas',
+            database: 'mypimesdb',
         });
     }
     static get instace() {
