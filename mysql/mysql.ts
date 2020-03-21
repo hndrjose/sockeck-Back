@@ -1,38 +1,29 @@
 import mysql = require('mysql');
-
+ 
 export default class Mysql {
-
+ 
   private static _instance: Mysql;
   
-  cnn: mysql.Connection;
+  cnn: mysql.Pool;
   conectado: boolean = false;
-
+ 
   constructor () {
       console.log('Clase inicializada');
       
-      this.cnn = mysql.createConnection({
-        host: '35.202.222.43',  //'34.66.212.9', // Localhost,  35.202.222.43
-       // socketPath: '/mypimesdb/tesis-271715:us-central1:mypimesdb',
+      this.cnn = mysql.createPool({
+        // host: '35.223.77.3',  //'34.66.212.9', // Localhost,  35.202.222.43
+        socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
         user: 'root', // root
-        password: 'systemas', // Ceutec-19, systemas
-        database: 'mypimesdb', //
+        password: 'root', // Ceutec-19, systemas
+        database: 'tesis', //
         // multipleStatements: true
-
-
-
-
-        
-
-
    });
-  
-    this.connectarDB();
  }
-
+ 
  public static get instace () {
    return this._instance || ( this._instance = new this() );
  }
-
+ 
  static ejecutarQuery( query: string, callback: Function ) {
    this.instace.cnn.query( query, ( err, results: object[], fields ) => {
     if (err) {
@@ -40,7 +31,7 @@ export default class Mysql {
       console.log( err );
       return callback(err);
       }
-
+ 
       if( results.length === 0 ) {
         callback('el registro solicitado no existe');
       }else{
@@ -48,18 +39,7 @@ export default class Mysql {
       }
    });
  }
-
- private connectarDB() {
-  this.cnn.connect( ( err: mysql.MysqlError ) => {
-     if(err){
-        console.log(err.message);
-        return;
-     } 
-     this.conectado = true;
-     console.log('Base de datos Online');
-  });
- }
-
+ 
 // const connection = mysql.createConnection({
 //     host: '35.202.222.43', // Localhost,  35.202.222.43
 //     user: 'root', // root
