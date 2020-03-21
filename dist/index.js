@@ -20,7 +20,7 @@ const server = server_1.default.instance;
 server.app.use(body_parser_1.default.urlencoded({ extended: true }));
 server.app.use(body_parser_1.default.json());
 // CORS
-server.app.use(cors_1.default({ origin: '*', credentials: true }));
+server.app.use(cors_1.default());
 // Rutas de servicios
 server.app.use('/', router_1.default);
 server.app.use('/', usuarios_1.default);

@@ -5,14 +5,13 @@ class Mysql {
     constructor() {
         this.conectado = false;
         console.log('Clase inicializada');
-        this.cnn = mysql.createConnection({
-            host: '35.202.222.43',
-            // socketPath: '/mypimesdb/tesis-271715:us-central1:mypimesdb',
+        this.cnn = mysql.createPool({
+            // host: '35.223.77.3',  //'34.66.212.9', // Localhost,  35.202.222.43
+            socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
             user: 'root',
-            password: 'systemas',
-            database: 'mypimesdb',
+            password: 'root',
+            database: 'tesis',
         });
-        this.connectarDB();
     }
     static get instace() {
         return this._instance || (this._instance = new this());
@@ -30,16 +29,6 @@ class Mysql {
             else {
                 callback(null, results);
             }
-        });
-    }
-    connectarDB() {
-        this.cnn.connect((err) => {
-            if (err) {
-                console.log(err.message);
-                return;
-            }
-            this.conectado = true;
-            console.log('Base de datos Online');
         });
     }
 }
