@@ -132,7 +132,7 @@ Pedidoss.get('/pedido/:idpedido', (req: Request, res: Response) => {
 Pedidoss.get('/Selecpedidos/:deiduser', (req: Request, res: Response) => {
     //Conexion
     const deiduser = req.params.deiduser;
-    const query = `SELECT pedidos.Idpedido, usuario.img, pedidos.Iduser, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${ deiduser } AND status = 'pendiente'`
+    const query = `SELECT pedidos.Idpedido, usuario.img, pedidos.Iduser, usuario.nombre, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${ deiduser } AND status = 'pendiente'`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             return res.status(500).json({

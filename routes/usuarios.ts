@@ -99,13 +99,22 @@ usuario.put('/editarUsuario/:Iduser', (req: Request, res: Response ) => {
             res.sendStatus(400)
             return
         }
-        res.status(200).json({
-            ok: true,
-            respuesta: usuario
+      
+        const query1 = `SELECT * FROM usuario WHERE Iduser = ${ Iduser }`
+        Mysql.ejecutarQuery(query1, ( err: any, usuario: any ) => {
+            if (err) {
+                console.log("No se puede seleccionar " + err)
+                res.sendStatus(500)
+                res.end()
+                return
+            }
+            res.status(200).json({
+                ok: true,
+                respuesta: usuario
+            });
         });
-        res.end()
-    })
-})
+    });
+});
 
 
 //Eliminar Usuario

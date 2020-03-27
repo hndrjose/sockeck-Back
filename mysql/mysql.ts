@@ -11,8 +11,8 @@ export default class Mysql {
       console.log('Clase inicializada');
       
       this.cnn = mysql.createPool({
-        // host: '35.223.77.3',  //'34.66.212.9', // Localhost,  35.202.222.43
-        socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
+        host: '35.202.222.43',  //'34.66.212.9', // Localhost,  35.202.222.43
+        // socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
         user: 'root', // root
         password: 'systemas', // Ceutec-19, systemas
         database: 'mypimesdb', //
