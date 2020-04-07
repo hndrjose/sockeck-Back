@@ -42,15 +42,17 @@ comentarios1.post('/crearComentario', (req: Request, res: Response ) => {
     //Conexion
     console.log("Tratando de crear un comentario nuevo..")
 
-    const Idchat = req.body.Idchat
-    const Iduser = req.body.Iduser
-    const fecha = req.body.fecha
-    const comentario = req.body.comentario
-    const Idpedido = req.body.Idpedido
-    const origen = req.body.origen
+    const Idchat = req.body.Idchat;
+    const Iduser = req.body.Iduser;
+    const fecha = req.body.fecha;
+    const comentario = req.body.comentario;
+    const Idactividad = req.body.Idactividad;
+    const origen = req.body.origen;
+    const Idorigen = req.body.Idorigen;
+    const Hora = req.body.Hora;
 
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
-    const query = `INSERT INTO comentarios (Idchat, comentario, fecha,  Iduser, Idpedido, origen)   VALUES  ('${ Idchat }', '${ comentario }',  '${ fecha }', ${ Iduser }, ${ Idpedido }, '${ origen }')`
+    const query = `INSERT INTO comentarios (Idchat, comentario, fecha, Iduser, Idactividad, origen, Idorigen, Hora)   VALUES  ('${ Idchat }', '${ comentario }',  '${ fecha }', ${ Iduser }, ${ Idactividad }, '${ origen }',  ${Idorigen}, '${Hora}')`
     Mysql.ejecutarQuery(query, ( err: any, comentario: object[] ) => {
         if (err) {
             console.log("Error al agregar nuevo Comentario: " + err)
@@ -67,7 +69,7 @@ comentarios1.post('/crearComentario', (req: Request, res: Response ) => {
 })
 
 
-//Editar Empleado
+//Editar Comentario
 comentarios1.put('/editarcomentario/:Iduser', (req: Request, res: Response ) => {
 
     //Conexion
@@ -81,7 +83,7 @@ comentarios1.put('/editarcomentario/:Iduser', (req: Request, res: Response ) => 
     const query = `UPDATE comentarios SET fecha = '${ fecha }', comentario = '${ comentario }' WHERE Iduser = ${ Iduser }`;
     Mysql.ejecutarQuery(query, ( err: any, comentario: object[] ) => {
         if (err) {
-            console.log("Error al editar un Usuario: " + err)
+            console.log("Error al editar un Comentario: " + err)
             res.sendStatus(400)
             return
         }
@@ -107,7 +109,7 @@ comentarios1.delete('/borrarComentario/:Id', (req: Request, res: Response ) => {
             res.end()
             return
         }
-        console.log("Usiario Eliminado")
+        console.log("Comentario Eliminado")
         res.json(comentario)
     })
 });
@@ -136,10 +138,11 @@ comentarios1.get('/SelecComentario/:Iduser', (req: Request, res: Response ) => {
 });
 
 //Mostrar Comentarios por Pedidos
-comentarios1.get('/SelecComentPed/:Idpedido', (req: Request, res: Response ) => {
+comentarios1.get('/SelecComentPed/:Idactividad/:Idorigen', (req: Request, res: Response ) => {
     //Conexion
-    const Idpedido = req.params.Idpedido;
-    const query = `SELECT usuario.Iduser, usuario.user, comentarios.fecha, comentarios.comentario  FROM comentarios INNER JOIN pedidos ON comentarios.Idpedido = pedidos.Idpedido INNER JOIN usuario ON comentarios.Iduser = usuario.Iduser WHERE comentarios.Idpedido = ${ Idpedido } AND comentarios.Idchat = 0 AND comentarios.origen = 'C'`
+    const Idactividad = req.params.Idactividad;
+    const Idorigen = req.params.Idorigen
+    const query = `SELECT usuario.Iduser, usuario.user, comentarios.fecha, comentarios.comentario, comentarios.Hora  FROM comentarios INNER JOIN usuario ON comentarios.Iduser = usuario.Iduser WHERE comentarios.Idactividad = ${ Idactividad } AND comentarios.Idorigen = ${Idorigen}  AND comentarios.origen = 'C'`
     Mysql.ejecutarQuery(query, ( err: any, comentario: object[] ) => {
         if (err) {
             return res.status(500).json({
@@ -157,10 +160,10 @@ comentarios1.get('/SelecComentPed/:Idpedido', (req: Request, res: Response ) => 
 });
 
 //Mostrar Comentarios por Pedidos
-comentarios1.get('/SelecComentPerfil/:Idpedido', (req: Request, res: Response ) => {
+comentarios1.get('/SelecComentPerfil/:Idorigen', (req: Request, res: Response ) => {
     //Conexion
-    const Idpedido = req.params.Idpedido;
-    const query = `SELECT usuario.Iduser, usuario.user, comentarios.fecha, comentarios.comentario  FROM comentarios INNER JOIN pedidos ON comentarios.Idpedido = pedidos.Idpedido INNER JOIN usuario ON comentarios.Iduser = usuario.Iduser WHERE comentarios.Idpedido = ${ Idpedido } AND comentarios.origen = 'P'`
+    const Idorigen = req.params.Idorigen;
+    const query = `SELECT usuario.Iduser, usuario.user, comentarios.fecha, comentarios.comentario, comentarios.Hora  FROM comentarios INNER JOIN usuario ON comentarios.Iduser = usuario.Iduser WHERE comentarios.Idorigen = ${ Idorigen } AND comentarios.origen = 'P'`
     Mysql.ejecutarQuery(query, ( err: any, comentario: object[] ) => {
         if (err) {
             return res.status(500).json({

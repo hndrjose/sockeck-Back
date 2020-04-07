@@ -69,7 +69,7 @@ DTperfil.get('/SelecDataPerfil/:Id', (req: Request, res: Response) => {
 
 
     const query = `SELECT * FROM dataperfil WHERE Iduser = ${Id}`
-    Mysql.ejecutarQuery(query, ( err: any, dtperfil: object[] ) => {
+    Mysql.ejecutarQuery(query, ( err: any, dtperfil: any ) => {
         if (err) {
             return res.status(500).json({
                 mensaje: "A ocurrido un Error",
@@ -78,33 +78,34 @@ DTperfil.get('/SelecDataPerfil/:Id', (req: Request, res: Response) => {
         }
         res.status(200).json({
             ok: true,
-            usuarios: (dtperfil)
+            dataperfil: (dtperfil)
         });
 
     });
 });
 
 //Seleccionar general
-DTperfil.post('/SelecDataLike/:termino', (req: Request, res: Response) => {
+DTperfil.get('/SelecDataLike/:termino/:Idciudad', (req: Request, res: Response) => {
     //Conexion
     console.log('realizando una busqueda');
     const termino = req.params.termino;
     const direccion = req.body.direccion;
+    const idciudad = req.params.Idciudad;
     const page = req.query.page;
     const limit = req.query.limit;
 
     const startindex = (page - 1) * limit //  ?page=1&limit=3
     const endindex = page * limit
     console.log('termino es ' + req.params.termino);
-    const query = `SELECT usuario.Iduser, usuario.nombre, usuario.img, usuario.vocacion, dataperfil.competencias, dataperfil.expLaboral FROM usuario INNER JOIN dataperfil ON usuario.Iduser = dataperfil.Iduser WHERE usuario.vocacion LIKE '%${ termino }%' AND usuario.role = 'PROV'`    //  WHERE usuario.vocacion LIKE '%" + req.params.termino + "%' AND usuario.direccion = '${ direccion }'
+    const query = `SELECT usuario.Iduser, usuario.nombre as nomuser, Ciudades.nombre, usuario.direccion, usuario.img, usuario.vocacion, dataperfil.competencias, dataperfil.expLaboral FROM usuario INNER JOIN dataperfil ON usuario.Iduser = dataperfil.Iduser INNER JOIN Ciudades ON usuario.Idciudad = Ciudades.Idciudad WHERE usuario.vocacion LIKE '%${ termino }%' AND usuario.role = 'PROV' AND usuario.Idciudad = ${idciudad}`    //  WHERE usuario.vocacion LIKE '%" + req.params.termino + "%' AND usuario.direccion = '${ direccion }'
     Mysql.ejecutarQuery(query, ( err: any, dtperfil: any ) => {
         if (err) {
-            return res.status(500).json({
-                mensaje: "A ocurrido un Error",
+            return res.status(400).json({
+                ok: false,
+                mensaje: "No existe Registros en esta Ciudad",
                 errors: err
             });
         }
-        // const resultado = rows.slice(startindex, endindex)
         res.status(200).json({
             ok: true,
             perfiles: dtperfil  //.slice(startindex, endindex)
@@ -140,6 +141,35 @@ DTperfil.post('/SelecparamLike/:termino', (req: Request, res: Response) => { //
 
     });
 });
+
+DTperfil.get('/SelecpamanID/:idciudad', (req: Request, res: Response) => { // 
+    //Conexion
+    const idciudad = req.params.idciudad;
+    const direccion = req.body.direccion;
+    const page = req.query.page;
+    const limit = req.query.limit;
+
+    const startindex = (page - 1) * limit //  ?page=1&limit=3
+    const endindex = page * limit
+    console.log('termino es ' + req.params.termino);
+    const query = `SELECT usuario.Iduser, usuario.nombre as nomuser, Ciudades.nombre, usuario.direccion, usuario.img, usuario.vocacion, dataperfil.competencias, dataperfil.expLaboral FROM usuario INNER JOIN dataperfil ON usuario.Iduser = dataperfil.Iduser INNER JOIN Ciudades ON usuario.Idciudad = Ciudades.Idciudad WHERE usuario.role = 'PROV' AND usuario.Idciudad = ${idciudad}`    //  WHERE usuario.vocacion LIKE '%" + req.params.termino + "%' 
+    Mysql.ejecutarQuery(query, ( err: any, dtperfil: any ) => {
+        if (err) {
+            return res.status(500).json({
+                mensaje: "A ocurrido un Error",
+                errors: err
+            });
+        }
+        // const resultado = rows.slice(startindex, endindex)
+        res.status(200).json({
+            ok: true,
+            perfiles: dtperfil  //.slice(startindex, endindex)
+        });
+
+    });
+});
+
+
 
 //Mostrar Fotos de Galeria
 DTperfil.get('/datagaleria/:Id', (req: Request, res: Response) => {

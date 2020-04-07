@@ -12,7 +12,7 @@ Pedidoss.post('/adpedido', (req: Request, res: Response) => {
     const valor = req.body.valor
     const fecha = req.body.fecha
     const Hora = req.body.Hora
-    const status = req.body.status
+    const statuss = req.body.status
     const deiduser = req.body.deiduser
     const deuser = req.body.deuser
     const descripcion = req.body.descripcion
@@ -21,7 +21,7 @@ Pedidoss.post('/adpedido', (req: Request, res: Response) => {
 
 
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
-    const query = `INSERT INTO pedidos (Iduser , valor, fecha, Hora, status, deiduser, deuser, descripcion, visto)   VALUES  (${ Iduser }, ${ valor }, '${ fecha }', '${ Hora }', '${ status }', ${ deiduser }, '${ deuser }', '${ descripcion }', '${ visto }')`
+    const query = `INSERT INTO pedidos (Iduser , valor, fecha, Hora, status, deiduser, deuser, descripcion, visto)   VALUES  (${ Iduser }, ${ valor }, '${ fecha }', '${ Hora }', '${ statuss }', ${ deiduser }, '${ deuser }', '${ descripcion }', '${ visto }')`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             console.log("Error al agregar nuevo Registro: " + err)
@@ -112,7 +112,8 @@ Pedidoss.delete('/borrarpedido/:Id', (req: Request, res: Response) => {
 Pedidoss.get('/pedido/:idpedido', (req: Request, res: Response) => {
     //Conexion
     const idpedido = req.params.idpedido;
-    const query = `SELECT * FROM pedidos WHERE pedidos.Idpedido = ${ idpedido }`
+  //  const query = `SELECT * FROM pedidos WHERE pedidos.Idpedido = ${ idpedido }`
+    const query = `SELECT usuario.Iduser, usuario.nombre, usuario.vocacion, pedidos.deuser, pedidos.fecha, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Idpedido = ${ idpedido }`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             return res.status(500).json({
@@ -132,7 +133,7 @@ Pedidoss.get('/pedido/:idpedido', (req: Request, res: Response) => {
 Pedidoss.get('/Selecpedidos/:deiduser', (req: Request, res: Response) => {
     //Conexion
     const deiduser = req.params.deiduser;
-    const query = `SELECT pedidos.Idpedido, usuario.img, pedidos.Iduser, usuario.nombre, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${ deiduser } AND status = 'pendiente'`
+    const query = `SELECT pedidos.Idpedido, pedidos.Idactividad, usuario.img, pedidos.Iduser, usuario.nombre, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${ deiduser } AND status = 'pendiente'`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             return res.status(500).json({
@@ -151,7 +152,7 @@ Pedidoss.get('/Selecpedidos/:deiduser', (req: Request, res: Response) => {
 Pedidoss.get('/Selecpedidospro/:Iduser', (req: Request, res: Response) => {
     //Conexion
     const Iduser = req.params.Iduser;
-    const query = `SELECT  pedidos.Idpedido, pedidos.deiduser, pedidos.deuser, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Iduser = ${ Iduser } AND status = 'pendiente'`
+    const query = `SELECT  pedidos.Idpedido, pedidos.Idactividad, pedidos.deiduser, pedidos.deuser, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion, pedidos.visto FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Iduser = ${ Iduser } AND status = 'pendiente'`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             return res.status(500).json({
@@ -203,9 +204,7 @@ Pedidoss.get('/ContaReg/:Id', (req: Request, res: Response) => {
     const query = `SELECT * FROM pedidos WHERE Iduser = ${ Id } AND status = 'pendiente' AND visto = 'N'`
     Mysql.ejecutarQuery(query, ( err: any, pedio: any[] ) => {
         if (err) {
-          //  console.log(err)
-         // res.sendStatus(500)
-            res.status(200).json({
+             res.status(200).json({
                 ok: false,
                 respuesta: 0
            });
@@ -274,40 +273,34 @@ Pedidoss.get('/ContaReg/:Id', (req: Request, res: Response) => {
 
 
 // Reiniciar contador de Alerta
-Pedidoss.put('/ReiniContaReg/:Id', (req: Request, res: Response) => {
+Pedidoss.put('/ReiniContaReg/:Iduser', (req: Request, res: Response) => {
 
-    const Iduser = req.params.Iduser
-    const conteo = 0
-    const visto = 'S'
+    const Iduser = req.params.Iduser;
+    const conteo = 0;
+    const visto = 'S';
 
     const query = `UPDATE Conteos SET userconteo = ${ conteo } WHERE Iduser = ${ Iduser }`
     Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
         if (err) {
             console.log("Error al editar un Registro: " + err)
-            res.sendStatus(400)
-            return
+            res.sendStatus(400);
+            return;
         }
-        res.status(200).json({
-            ok: true,
-            respuesta: pedio
+        const queryString1 = `UPDATE pedidos SET visto = '${ visto }' WHERE Iduser = ${ Iduser }`
+        Mysql.ejecutarQuery(queryString1, ( err: any, pedio: object[] ) => {
+            if (err) {
+                console.log("Error al editar un Registro: " + err)
+                res.sendStatus(400);
+                return;
+            }
+            res.status(200).json({
+                ok: true,
+                respuesta: pedio
+            });
+            res.end()
         });
-        res.end()
-    })
-
-    const queryString1 = `UPDATE pedidos SET visto = '${ visto }' WHERE Iduser = ${ Iduser }`
-    Mysql.ejecutarQuery(query, ( err: any, pedio: object[] ) => {
-        if (err) {
-            console.log("Error al editar un Registro: " + err)
-            res.sendStatus(400)
-            return
-        }
-        res.status(200).json({
-            ok: true,
-            respuesta: pedio
-        });
-        res.end()
-    })
-})
+    });
+});
 
 
 //Mostrar trababajos activos
@@ -389,7 +382,7 @@ Pedidoss.get('/trabajosclose/:Id', (req: Request, res: Response) => {
         // result = resultado.length
         res.status(200).json({
             ok: true,
-            resultado: pedio[0].terminados
+            terminados: pedio[0].terminados
         });
     })
 });

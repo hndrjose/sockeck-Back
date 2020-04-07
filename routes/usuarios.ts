@@ -13,8 +13,8 @@ usuario.post('/logUser', ( req: Request, res: Response  ) => {
 
     Mysql.ejecutarQuery(query, ( err: any, usuario: object[] ) => {
         if (err) {
-            return res.status(500).json({
-                mensaje: "A ocurrido un Error",
+            return res.status(400).json({
+                mensaje: "Credenciales Incorrectas",
                 errors: err
             });
         } else {
@@ -54,12 +54,13 @@ usuario.post('/crearUsuario', ( req: Request, res: Response  ) => {
         const password1 = req.body.password;
         const email = req.body.email;
         const nombre = req.body.nombre;
-        const direccion = req.body.direccion
-        const telefono = req.body.telefono
-        const vocacion = req.body.vocacion
-        const role = req.body.role
+        const direccion = req.body.direccion;
+        const telefono = req.body.telefono;
+        const vocacion = req.body.vocacion;
+        const role = req.body.role;
+        const ciudad = req.body.ciudad;
 
-    const query = `INSERT INTO usuario (user, password, email, nombre, direccion, telefono, vocacion, role) VALUES('${ user1 }', '${ password1 }', '${ email }', '${ nombre }', '${ direccion }', '${ telefono }', '${ vocacion }', '${ role }')`;  // , direccion, telefono, vocacion, role   , 
+    const query = `INSERT INTO usuario (user, password, email, nombre, direccion, telefono, vocacion, role, Idciudad) VALUES('${ user1 }', '${ password1 }', '${ email }', '${ nombre }', '${ direccion }', '${ telefono }', '${ vocacion }', '${ role }', ${ciudad})`;  // , direccion, telefono, vocacion, role   , 
     Mysql.ejecutarQuery(query, ( err: any, usuario: object[] ) => {
         if (err) {
             return res.status(500).json({
@@ -84,15 +85,16 @@ usuario.put('/editarUsuario/:Iduser', (req: Request, res: Response ) => {
     console.log("Tratando de editar un registro..")
     console.log("Cedula: " + req.params.Iduser)
 
-    const Iduser = req.params.Iduser
-    const password1 = req.body.password
-    const email = req.body.email
-    const nombre = req.body.nombre
-    const direccion = req.body.direccion
-    const telefono = req.body.telefono
-    const vocacion = req.body.vocacion
+    const Iduser = req.params.Iduser;
+    const password1 = req.body.password;
+    const email = req.body.email;
+    const nombre = req.body.nombre;
+    const direccion = req.body.direccion;
+    const telefono = req.body.telefono;
+    const vocacion = req.body.vocacion;
+    const ciudad = req.body.ciudad;
 
-    const query = `UPDATE usuario SET password = '${ password1 }', email = '${ email }', nombre = '${ nombre }', direccion = '${ direccion }', telefono = '${ telefono }', vocacion = '${ vocacion }' WHERE Iduser = ${ Iduser }`;
+    const query = `UPDATE usuario SET password = '${ password1 }', email = '${ email }', nombre = '${ nombre }', direccion = '${ direccion }', telefono = '${ telefono }', vocacion = '${ vocacion }', ciudad = ${ciudad} WHERE Iduser = ${ Iduser }`;
     Mysql.ejecutarQuery(query, ( err: any, usuario: object[] ) => {
         if (err) {
             console.log("Error al editar un Usuario: " + err)
@@ -161,6 +163,7 @@ usuario.get('/SelecionUsuario/:Id', (req: Request, res: Response ) => {
     });
 });
 
+
 //Seleccionar Usuario LIKE
 usuario.get('/likeusuario/:termino', (req: Request, res: Response ) => {
 
@@ -186,6 +189,28 @@ usuario.get('/likeusuario/:termino', (req: Request, res: Response ) => {
         res.status(200).json({
             ok: true,
             usuarios: (resultado.length)
+        });
+
+    });
+});
+
+//Seleccionar Usuario LIKE
+usuario.get('/SelecUser/:termino', (req: Request, res: Response ) => {
+
+    //Conexion
+    const users = req.params.termino;
+
+    const query = `SELECT * FROM usuario WHERE user Like '%${ users }%'`;
+    Mysql.ejecutarQuery(query, ( err: any, usuario: object[] ) => {
+        if (err) {
+            return res.status(500).json({
+                mensaje: "A ocurrido un Error",
+                errors: err
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            usuarios: usuario
         });
 
     });

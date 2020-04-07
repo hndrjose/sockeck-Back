@@ -37,7 +37,9 @@ Upimg.put('/imagenes/:Iduser', (req: Request, res: Response) => {
     var nombbreArchivo = `${ Iduser }-${ new Date().getMilliseconds() }.${ extencion }`;
 
     // //mover el archivo del temporal a un path
-    var path = `./imagen/${ nombbreArchivo }`;
+    console.log('el nombre del archivo ' + nombbreArchivo);
+    var path = `./dist/imagen/${ nombbreArchivo }`;
+    console.log('moviendo img ' + path);
     archivo.mv(path, (err: any) => {
         if (err) {
             return res.status(500).json({
@@ -46,6 +48,7 @@ Upimg.put('/imagenes/:Iduser', (req: Request, res: Response) => {
                 errors: err
             });
         }
+        console.log('archivo subido');
         subirarchivo(Iduser, nombbreArchivo, res);
     });
 
@@ -61,7 +64,7 @@ function subirarchivo(Id: number, nombbreArchivo: string, res: any) {
             res.end()
             return
         }
-        var pathviejo = './imagen/' + image[0].img;
+        var pathviejo = './dist/imagen/' + image[0].img;
         //Si exite elimina la imagen anterior
         if (fs.existsSync(pathviejo)) {
             fs.unlinkSync(pathviejo);
@@ -69,7 +72,8 @@ function subirarchivo(Id: number, nombbreArchivo: string, res: any) {
     });
 
     const img = nombbreArchivo;
-    const query1 = `UPDATE usuario SET img = ${ img } WHERE Iduser = ${ Id }`
+    console.log(nombbreArchivo);
+    const query1 = `UPDATE usuario SET img = '${ img }' WHERE Iduser = ${ Id }`
     Mysql.ejecutarQuery(query1, ( err: any, image: any ) => {
         if (err) {
             console.log("Error al Modificar Imagen" + err)
@@ -77,13 +81,21 @@ function subirarchivo(Id: number, nombbreArchivo: string, res: any) {
             res.end()
             return
         }
-        res.status(200).json({
-            okimg: true,
-            usuarios: nombbreArchivo
-        });
-        // console.log("Empleadp Modificado", results.affectedRows)
-        // console.log("La imagen es: ", nombbreArchivo)
-        res.end()
+        
+        const query2 = `SELECT * FROM usuario WHERE Iduser = ${ Id }`
+        Mysql.ejecutarQuery(query2, ( err: any, usuario: any ) => {
+            if (err) {
+                console.log("No existe el Empleado " + err)
+                res.sendStatus(500)
+                res.end()
+                return
+            }
+            res.status(200).json({
+                ok: true,
+                usuarios: usuario
+            });
+            res.end()
+         });
     });
     //   npm i serve-index --save   es una libreria que sirve para llegar a mostrar imagenes guardadas por peticiones html
 }
@@ -91,6 +103,7 @@ function subirarchivo(Id: number, nombbreArchivo: string, res: any) {
 Upimg.get('/verimagen/:img', (req: Request, res: Response) => {
 
     var img = req.params.img;
+
 
     //  const pathImagen = path.resolve(__dirname, `./imagen/${img}`);
     //  if (fs.existsSync(pathImagen)) 
@@ -103,12 +116,12 @@ Upimg.get('/verimagen/:img', (req: Request, res: Response) => {
     //     res.sendFile(path.join(__dirname, '../imagen', pathImagen));
     //     //  res.sendfile(path);
     // });
+    console.log(pathImagen);
     fs.exists(pathImagen, existe => {
         if (!existe) {
             //   console.log('No existe');
             pathImagen = path.join(__dirname, '../imagen', 'no-img.jpg');
         }
-        console.log(pathImagen);
         res.sendFile(pathImagen);
     });
 });

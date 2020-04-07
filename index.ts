@@ -12,6 +12,9 @@ import Puntuar from './routes/puntuacion';
 import Upimg from './routes/upload';
 import DTperfil from './routes/dataPerfil';
 import comentarios1 from './routes/comentarios';
+import actividad from './routes/activiadades';
+import ciudades from './routes/ciudades';
+
 
 
 
@@ -33,6 +36,8 @@ server.app.use('/', Puntuar);
 server.app.use('/', Upimg);
 server.app.use('/', DTperfil);
 server.app.use('/', comentarios1);
+server.app.use('/', actividad);
+server.app.use('/', ciudades);
 
 server.app.post('/formulario', (req, res) => {
     const message = Object.assign({}, req.body);

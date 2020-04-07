@@ -30,6 +30,7 @@ Imges.put('/imagenes/:Id', (req, res) => {
     }
     //obtener nombre del archivo
     var archivo = req.files.imge;
+    console.log(archivo);
     var nombrecortado = archivo.name.split('.');
     var extencion = nombrecortado[nombrecortado.length - 1];
     //solo extenciones permitidas

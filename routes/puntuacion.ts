@@ -15,7 +15,7 @@ Puntuar.post('/crearpuntuacion', (req: Request, res: Response) => {
     const puntuacion = req.body.puntuacion;
     const Idperfil = req.body.Idperfil;
         //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
-    const query = `INSERT INTO puntuaciones (Iduser, puntuacion, Idperfil)   VALUES (${Iduser}, ${puntuacion}, ${Idperfil})`;
+    const query = `INSERT INTO puntuaciones (Iduser, puntuacion, Auser)   VALUES (${Iduser}, ${puntuacion}, ${Idperfil})`;
     Mysql.ejecutarQuery(query, ( err: any, puntua: any ) => {
         if (err) {
             console.log("Error al agregar nuevo registro: " + err)

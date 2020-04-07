@@ -50,10 +50,10 @@ export default class Server {
             console.log('Cliente conectado');
 
             // Mensajes
-            socket.mensaje( cliente, this.io );
+            socket.mensaje( cliente, this.io );  // <=== , this.io 
 
             // Desconectar
-            socket.desconectar( cliente );         
+            socket.desconectar( cliente );  
 
         });
 
@@ -62,7 +62,7 @@ export default class Server {
 
     start( callback: Function ) {
 
-        this.httpServer.listen( this.port );   // < ===, callback 
+        this.httpServer.listen( this.port  );   // < ===, callback 
         this.distfolder();
 
     }

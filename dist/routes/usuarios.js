@@ -12,8 +12,8 @@ usuario.post('/logUser', (req, res) => {
     const query = `SELECT * FROM usuario WHERE user = '${user}' AND password = '${password}'`;
     mysql_1.default.ejecutarQuery(query, (err, usuario) => {
         if (err) {
-            return res.status(500).json({
-                mensaje: "A ocurrido un Error",
+            return res.status(400).json({
+                mensaje: "Credenciales Incorrectas",
                 errors: err
             });
         }
@@ -53,7 +53,8 @@ usuario.post('/crearUsuario', (req, res) => {
     const telefono = req.body.telefono;
     const vocacion = req.body.vocacion;
     const role = req.body.role;
-    const query = `INSERT INTO usuario (user, password, email, nombre, direccion, telefono, vocacion, role) VALUES('${user1}', '${password1}', '${email}', '${nombre}', '${direccion}', '${telefono}', '${vocacion}', '${role}')`; // , direccion, telefono, vocacion, role   , 
+    const ciudad = req.body.ciudad;
+    const query = `INSERT INTO usuario (user, password, email, nombre, direccion, telefono, vocacion, role, Idciudad) VALUES('${user1}', '${password1}', '${email}', '${nombre}', '${direccion}', '${telefono}', '${vocacion}', '${role}', ${ciudad})`; // , direccion, telefono, vocacion, role   , 
     mysql_1.default.ejecutarQuery(query, (err, usuario) => {
         if (err) {
             return res.status(500).json({
@@ -80,7 +81,8 @@ usuario.put('/editarUsuario/:Iduser', (req, res) => {
     const direccion = req.body.direccion;
     const telefono = req.body.telefono;
     const vocacion = req.body.vocacion;
-    const query = `UPDATE usuario SET password = '${password1}', email = '${email}', nombre = '${nombre}', direccion = '${direccion}', telefono = '${telefono}', vocacion = '${vocacion}' WHERE Iduser = ${Iduser}`;
+    const ciudad = req.body.ciudad;
+    const query = `UPDATE usuario SET password = '${password1}', email = '${email}', nombre = '${nombre}', direccion = '${direccion}', telefono = '${telefono}', vocacion = '${vocacion}', ciudad = ${ciudad} WHERE Iduser = ${Iduser}`;
     mysql_1.default.ejecutarQuery(query, (err, usuario) => {
         if (err) {
             console.log("Error al editar un Usuario: " + err);
@@ -160,6 +162,24 @@ usuario.get('/likeusuario/:termino', (req, res) => {
         res.status(200).json({
             ok: true,
             usuarios: (resultado.length)
+        });
+    });
+});
+//Seleccionar Usuario LIKE
+usuario.get('/SelecUser/:termino', (req, res) => {
+    //Conexion
+    const users = req.params.termino;
+    const query = `SELECT * FROM usuario WHERE user Like '%${users}%'`;
+    mysql_1.default.ejecutarQuery(query, (err, usuario) => {
+        if (err) {
+            return res.status(500).json({
+                mensaje: "A ocurrido un Error",
+                errors: err
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            usuarios: usuario
         });
     });
 });

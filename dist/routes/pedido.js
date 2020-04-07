@@ -13,14 +13,14 @@ Pedidoss.post('/adpedido', (req, res) => {
     const valor = req.body.valor;
     const fecha = req.body.fecha;
     const Hora = req.body.Hora;
-    const status = req.body.status;
+    const statuss = req.body.status;
     const deiduser = req.body.deiduser;
     const deuser = req.body.deuser;
     const descripcion = req.body.descripcion;
     const Iduser = req.body.Iduser;
     const visto = req.body.visto;
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
-    const query = `INSERT INTO pedidos (Iduser , valor, fecha, Hora, status, deiduser, deuser, descripcion, visto)   VALUES  (${Iduser}, ${valor}, '${fecha}', '${Hora}', '${status}', ${deiduser}, '${deuser}', '${descripcion}', '${visto}')`;
+    const query = `INSERT INTO pedidos (Iduser , valor, fecha, Hora, status, deiduser, deuser, descripcion, visto)   VALUES  (${Iduser}, ${valor}, '${fecha}', '${Hora}', '${statuss}', ${deiduser}, '${deuser}', '${descripcion}', '${visto}')`;
     mysql_1.default.ejecutarQuery(query, (err, pedio) => {
         if (err) {
             console.log("Error al agregar nuevo Registro: " + err);
@@ -97,7 +97,8 @@ Pedidoss.delete('/borrarpedido/:Id', (req, res) => {
 Pedidoss.get('/pedido/:idpedido', (req, res) => {
     //Conexion
     const idpedido = req.params.idpedido;
-    const query = `SELECT * FROM pedidos WHERE pedidos.Idpedido = ${idpedido}`;
+    //  const query = `SELECT * FROM pedidos WHERE pedidos.Idpedido = ${ idpedido }`
+    const query = `SELECT usuario.Iduser, usuario.nombre, usuario.vocacion, pedidos.deuser, pedidos.fecha, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Idpedido = ${idpedido}`;
     mysql_1.default.ejecutarQuery(query, (err, pedio) => {
         if (err) {
             return res.status(500).json({
@@ -115,7 +116,7 @@ Pedidoss.get('/pedido/:idpedido', (req, res) => {
 Pedidoss.get('/Selecpedidos/:deiduser', (req, res) => {
     //Conexion
     const deiduser = req.params.deiduser;
-    const query = `SELECT pedidos.Idpedido, usuario.img, pedidos.Iduser, usuario.nombre, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${deiduser} AND status = 'pendiente'`;
+    const query = `SELECT pedidos.Idpedido, pedidos.Idactividad, usuario.img, pedidos.Iduser, usuario.nombre, usuario.user, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.deiduser = ${deiduser} AND status = 'pendiente'`;
     mysql_1.default.ejecutarQuery(query, (err, pedio) => {
         if (err) {
             return res.status(500).json({
@@ -133,7 +134,7 @@ Pedidoss.get('/Selecpedidos/:deiduser', (req, res) => {
 Pedidoss.get('/Selecpedidospro/:Iduser', (req, res) => {
     //Conexion
     const Iduser = req.params.Iduser;
-    const query = `SELECT  pedidos.Idpedido, pedidos.deiduser, pedidos.deuser, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Iduser = ${Iduser} AND status = 'pendiente'`;
+    const query = `SELECT  pedidos.Idpedido, pedidos.Idactividad, pedidos.deiduser, pedidos.deuser, pedidos.fecha, pedidos.Hora, pedidos.status, pedidos.valor, pedidos.descripcion, pedidos.visto FROM mypimesdb.pedidos INNER JOIN mypimesdb.usuario ON pedidos.Iduser = usuario.Iduser WHERE pedidos.Iduser = ${Iduser} AND status = 'pendiente'`;
     mysql_1.default.ejecutarQuery(query, (err, pedio) => {
         if (err) {
             return res.status(500).json({
@@ -178,8 +179,6 @@ Pedidoss.get('/ContaReg/:Id', (req, res) => {
     const query = `SELECT * FROM pedidos WHERE Iduser = ${Id} AND status = 'pendiente' AND visto = 'N'`;
     mysql_1.default.ejecutarQuery(query, (err, pedio) => {
         if (err) {
-            //  console.log(err)
-            // res.sendStatus(500)
             res.status(200).json({
                 ok: false,
                 respuesta: 0
@@ -244,7 +243,7 @@ Pedidoss.get('/ContaReg/:Id', (req, res) => {
     });
 });
 // Reiniciar contador de Alerta
-Pedidoss.put('/ReiniContaReg/:Id', (req, res) => {
+Pedidoss.put('/ReiniContaReg/:Iduser', (req, res) => {
     const Iduser = req.params.Iduser;
     const conteo = 0;
     const visto = 'S';
@@ -255,24 +254,19 @@ Pedidoss.put('/ReiniContaReg/:Id', (req, res) => {
             res.sendStatus(400);
             return;
         }
-        res.status(200).json({
-            ok: true,
-            respuesta: pedio
+        const queryString1 = `UPDATE pedidos SET visto = '${visto}' WHERE Iduser = ${Iduser}`;
+        mysql_1.default.ejecutarQuery(queryString1, (err, pedio) => {
+            if (err) {
+                console.log("Error al editar un Registro: " + err);
+                res.sendStatus(400);
+                return;
+            }
+            res.status(200).json({
+                ok: true,
+                respuesta: pedio
+            });
+            res.end();
         });
-        res.end();
-    });
-    const queryString1 = `UPDATE pedidos SET visto = '${visto}' WHERE Iduser = ${Iduser}`;
-    mysql_1.default.ejecutarQuery(query, (err, pedio) => {
-        if (err) {
-            console.log("Error al editar un Registro: " + err);
-            res.sendStatus(400);
-            return;
-        }
-        res.status(200).json({
-            ok: true,
-            respuesta: pedio
-        });
-        res.end();
     });
 });
 //Mostrar trababajos activos
@@ -346,7 +340,7 @@ Pedidoss.get('/trabajosclose/:Id', (req, res) => {
         // result = resultado.length
         res.status(200).json({
             ok: true,
-            resultado: pedio[0].terminados
+            terminados: pedio[0].terminados
         });
     });
 });

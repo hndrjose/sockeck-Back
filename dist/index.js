@@ -15,6 +15,8 @@ const puntuacion_1 = __importDefault(require("./routes/puntuacion"));
 const upload_1 = __importDefault(require("./routes/upload"));
 const dataPerfil_1 = __importDefault(require("./routes/dataPerfil"));
 const comentarios_1 = __importDefault(require("./routes/comentarios"));
+const activiadades_1 = __importDefault(require("./routes/activiadades"));
+const ciudades_1 = __importDefault(require("./routes/ciudades"));
 const server = server_1.default.instance;
 // BodyParser
 server.app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -29,6 +31,8 @@ server.app.use('/', puntuacion_1.default);
 server.app.use('/', upload_1.default);
 server.app.use('/', dataPerfil_1.default);
 server.app.use('/', comentarios_1.default);
+server.app.use('/', activiadades_1.default);
+server.app.use('/', ciudades_1.default);
 server.app.post('/formulario', (req, res) => {
     const message = Object.assign({}, req.body);
     mailer_1.default.to = message.to;

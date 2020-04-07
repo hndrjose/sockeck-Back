@@ -6,6 +6,7 @@ exports.desconectar = (cliente) => {
     });
 };
 // Escuchar mensajes
+// export const mensaje = ( cliente: Socket, io: socketIO.Server ) => {
 exports.mensaje = (cliente, io) => {
     cliente.on('mensaje', (payload) => {
         console.log('Mensaje recibido', payload);
