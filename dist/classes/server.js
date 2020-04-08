@@ -35,10 +35,14 @@ class Server {
         console.log('Escuchando conexiones - sockets');
         this.io.on('connection', cliente => {
             console.log('Cliente conectado');
+            // Conectar cliente
+            socket.conectarCliente(cliente);
             // Mensajes
             socket.mensaje(cliente, this.io); // <=== , this.io 
             // Desconectar
             socket.desconectar(cliente);
+            // usuario
+            socket.configurarusuario(cliente, this.io);
         });
     }
     start(callback) {

@@ -30,7 +30,7 @@ Upimg.put('/imagenes/:Iduser', (req, res) => {
     }
     //obtener nombre del archivo
     var archivo = req.files.imge;
-    console.log(archivo);
+    //  console.log(archivo);
     var nombrecortado = archivo.name.split('.');
     var extencion = nombrecortado[nombrecortado.length - 1];
     //solo extenciones permitidas
@@ -45,7 +45,7 @@ Upimg.put('/imagenes/:Iduser', (req, res) => {
     //Nombre del archivo personalizado
     var nombbreArchivo = `${Iduser}-${new Date().getMilliseconds()}.${extencion}`;
     // //mover el archivo del temporal a un path
-    console.log('el nombre del archivo ' + nombbreArchivo);
+    // console.log('el nombre del archivo ' + nombbreArchivo);
     var path = `./dist/imagen/${nombbreArchivo}`;
     console.log('moviendo img ' + path);
     archivo.mv(path, (err) => {
@@ -56,8 +56,8 @@ Upimg.put('/imagenes/:Iduser', (req, res) => {
                 errors: err
             });
         }
-        console.log('archivo subido');
-        subirarchivo(Iduser, nombbreArchivo, res);
+        //  console.log('archivo subido');
+        subirarchivo(parseInt(Iduser), nombbreArchivo, res);
     });
 });
 function subirarchivo(Id, nombbreArchivo, res) {
@@ -115,7 +115,6 @@ Upimg.get('/verimagen/:img', (req, res) => {
     //     res.sendFile(path.join(__dirname, '../imagen', pathImagen));
     //     //  res.sendfile(path);
     // });
-    console.log(pathImagen);
     fs.exists(pathImagen, existe => {
         if (!existe) {
             //   console.log('No existe');
@@ -163,7 +162,7 @@ Upimg.put('/imggaleria/:Iduser', (req, res) => {
                 errors: err
             });
         }
-        subirgaleria(Iduser, nombbreArchivo, fecha2, res);
+        subirgaleria(parseInt(Iduser), nombbreArchivo, fecha2, res);
     });
 });
 function subirgaleria(Id, nombbreArchivo, fecha, res) {
@@ -195,8 +194,6 @@ function subirgaleria(Id, nombbreArchivo, fecha, res) {
             okimg: true,
             galeria: galery
         });
-        // console.log("Empleadp Modificado", results.affectedRows)
-        // console.log("La imagen es: ", nombbreArchivo)
         res.end();
     });
     //   npm i serve-index --save   es una libreria que sirve para llegar a mostrar imagenes guardadas por peticiones html
@@ -206,7 +203,6 @@ Upimg.get('/vergaleria/:img', (req, res) => {
     //  const pathImagen = path.resolve(__dirname, `./imagen/${img}`);
     //  if (fs.existsSync(pathImagen)) 
     var pathImagen = path.join(__dirname, '../galeria', img);
-    console.log(pathImagen);
     fs.exists(pathImagen, existe => {
         if (!existe) {
             //   console.log('No existe');
@@ -219,7 +215,6 @@ Upimg.get('/vergaleria/:img', (req, res) => {
 Upimg.delete('/ElimImg/:img', (req, res) => {
     var img = req.params.img;
     var pathImagen = path.join(__dirname, '../galeria', img);
-    console.log(pathImagen);
     fs.exists(pathImagen, existe => {
         if (!existe) {
             console.log('No existe');

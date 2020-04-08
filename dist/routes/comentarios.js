@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const mysql_1 = __importDefault(require("../mysql/mysql"));
+const server_1 = __importDefault(require("../classes/server"));
 const comentarios1 = express_1.Router();
 //////////////////////PROCEDIMIENTOS COMENTARIOS ////////////////////////////
 //  Obtener Comentario
@@ -47,6 +48,11 @@ comentarios1.post('/crearComentario', (req, res) => {
     const origen = req.body.origen;
     const Idorigen = req.body.Idorigen;
     const Hora = req.body.Hora;
+    const server = server_1.default.instance;
+    const payload = {
+        ok: true
+    };
+    server.io.in(Iduser).emit('mensaje-privado', payload);
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
     const query = `INSERT INTO comentarios (Idchat, comentario, fecha, Iduser, Idactividad, origen, Idorigen, Hora)   VALUES  ('${Idchat}', '${comentario}',  '${fecha}', ${Iduser}, ${Idactividad}, '${origen}',  ${Idorigen}, '${Hora}')`;
     mysql_1.default.ejecutarQuery(query, (err, comentario) => {

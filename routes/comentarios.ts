@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import Mysql from '../mysql/mysql';
+import Server from '../classes/server';
 
 const comentarios1 = Router();
 
@@ -50,6 +51,14 @@ comentarios1.post('/crearComentario', (req: Request, res: Response ) => {
     const origen = req.body.origen;
     const Idorigen = req.body.Idorigen;
     const Hora = req.body.Hora;
+
+
+    const server = Server.instance;
+    const payload = {
+        ok: true
+    };
+
+    server.io.in(Iduser).emit('mensaje-privado', payload);
 
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
     const query = `INSERT INTO comentarios (Idchat, comentario, fecha, Iduser, Idactividad, origen, Idorigen, Hora)   VALUES  ('${ Idchat }', '${ comentario }',  '${ fecha }', ${ Iduser }, ${ Idactividad }, '${ origen }',  ${Idorigen}, '${Hora}')`

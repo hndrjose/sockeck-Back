@@ -37,8 +37,6 @@ Pedidoss.post('/adpedido', (req, res) => {
 //Editar Data del PEDIDOS
 Pedidoss.put('/editarpedido/:Iduser', (req, res) => {
     //Conexion
-    console.log("Tratando de editar una registro..");
-    console.log("Cedula: " + req.params.Iduser);
     const status = req.body.status;
     const Iduser = req.body.Iduser;
     const query = `UPDATE pedidos SET status = ${status} WHERE Iduser = ${Iduser}`;
@@ -58,8 +56,6 @@ Pedidoss.put('/editarpedido/:Iduser', (req, res) => {
 //Editar Data del PEDIDOSPROFECIONALES
 Pedidoss.put('/editarpedidopro/:Idcomperfil', (req, res) => {
     //Conexion
-    console.log("Tratando de editar una registro..");
-    console.log("ID: " + req.params.Iduser);
     const status = req.body.status;
     const Idcomperfil = req.body.Idcomperfil;
     const query = `UPDATE pedidos SET status = ${status} WHERE Idcomperfil = ${Idcomperfil}`;
@@ -89,7 +85,6 @@ Pedidoss.delete('/borrarpedido/:Id', (req, res) => {
             res.end();
             return;
         }
-        console.log("registross Eliminado");
         res.json(pedio);
     });
 });
@@ -151,7 +146,6 @@ Pedidoss.get('/Selecpedidospro/:Iduser', (req, res) => {
 //Agregar data de pedido
 Pedidoss.post('/adConteo', (req, res) => {
     //Conexion
-    console.log('Ingresando la Id para Conteo: ' + req.body.Iduser);
     const Iduser = req.body.Iduser;
     const conteo = 0;
     //  VALUES  (? , ? , (SELECT IdEmpleado FROM Empleado WHERE Nombre = ?) ,(SELECT IdProteccion FROM Proteccion WHERE Tipo = ?), (SELECT IdMolestias FROM Molestias WHERE Molestia = ?),(SELECT IdHistoriaCl FROM HistoriaCl WHERE IdEmpleado = ?), (SELECT IdEmpresa FROM Empresa WHERE  Nombre = ?), (SELECT IdAudiometro FROM Audiometro WHERE Modelo = ?))"
@@ -188,11 +182,6 @@ Pedidoss.get('/ContaReg/:Id', (req, res) => {
         }
         const resultado = pedio.slice();
         result = resultado.length;
-        console.log('Cantidad de Reg ' + result);
-        // res.status(200).json({
-        //      ok: true,
-        //      respuesta: pedio[0].status
-        // });
         const query1 = `SELECT userconteo FROM Conteos WHERE Iduser = ${Id}`;
         mysql_1.default.ejecutarQuery(query1, (err, pedio) => {
             if (err) {
@@ -203,9 +192,7 @@ Pedidoss.get('/ContaReg/:Id', (req, res) => {
             }
             anterior = pedio[0].userconteo;
             var resultot = result - anterior;
-            console.log('resultot es: ' + resultot);
             if (resultot <= 0) {
-                console.log('El Resultado es 0');
                 const query2 = `SELECT userconteo FROM Conteos WHERE Iduser = ${Id}`;
                 mysql_1.default.ejecutarQuery(query2, (err, pedio) => {
                     if (err) {
@@ -221,7 +208,6 @@ Pedidoss.get('/ContaReg/:Id', (req, res) => {
                 });
             }
             else {
-                console.log('EL Resultado es mayor que 0');
                 const query3 = `UPDATE Conteos SET userconteo = ${resultot} WHERE Iduser = ${Id}`;
                 mysql_1.default.ejecutarQuery(query3, (err, pedio) => {
                     if (err) {

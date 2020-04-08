@@ -6,8 +6,8 @@ class Mysql {
         this.conectado = false;
         console.log('Clase inicializada');
         this.cnn = mysql.createPool({
-            host: '35.202.222.43',
-            // socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
+            // host: '35.202.222.43',  // Localhost,  35.202.222.43
+            socketPath: `/cloudsql/crucial-accord-261801:us-central1:mypimesdb`,
             user: 'root',
             password: 'systemas',
             database: 'mypimesdb',

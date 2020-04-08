@@ -62,7 +62,7 @@ Imges.put('/imagenes/:Id', (req: Request, res: Response) => {
 
 });
 
-function subirarchivo(Id: number, nombbreArchivo: string, res: any) {
+function subirarchivo(Id: string, nombbreArchivo: string, res: any) {
 
     const query = "SELECT Cedula, img FROM empleado WHERE Cedula = ?"
     Mysql.ejecutarQuery(query, ( err: any, image: any ) => {

@@ -41,9 +41,6 @@ Pedidoss.post('/adpedido', (req: Request, res: Response) => {
 Pedidoss.put('/editarpedido/:Iduser', (req: Request, res: Response) => {
 
     //Conexion
-    console.log("Tratando de editar una registro..")
-    console.log("Cedula: " + req.params.Iduser)
-
     const status = req.body.status
     const Iduser = req.body.Iduser
 
@@ -68,9 +65,6 @@ Pedidoss.put('/editarpedido/:Iduser', (req: Request, res: Response) => {
 Pedidoss.put('/editarpedidopro/:Idcomperfil', (req: Request, res: Response) => {
 
     //Conexion
-    console.log("Tratando de editar una registro..")
-    console.log("ID: " + req.params.Iduser)
-
     const status = req.body.status
     const Idcomperfil = req.body.Idcomperfil
 
@@ -103,7 +97,6 @@ Pedidoss.delete('/borrarpedido/:Id', (req: Request, res: Response) => {
             res.end()
             return
         }
-        console.log("registross Eliminado")
         res.json(pedio)
     })
 });
@@ -171,7 +164,6 @@ Pedidoss.get('/Selecpedidospro/:Iduser', (req: Request, res: Response) => {
 //Agregar data de pedido
 Pedidoss.post('/adConteo', (req: Request, res: Response) => {
     //Conexion
-    console.log('Ingresando la Id para Conteo: ' + req.body.Iduser)
     const Iduser = req.body.Iduser
     const conteo = 0
 
@@ -213,14 +205,8 @@ Pedidoss.get('/ContaReg/:Id', (req: Request, res: Response) => {
         }
         const resultado = pedio.slice();
         result = resultado.length;
-        console.log('Cantidad de Reg ' + result);
-        // res.status(200).json({
-        //      ok: true,
-        //      respuesta: pedio[0].status
-        // });
-      
 
-        const query1 = `SELECT userconteo FROM Conteos WHERE Iduser = ${ Id }`
+         const query1 = `SELECT userconteo FROM Conteos WHERE Iduser = ${ Id }`
         Mysql.ejecutarQuery(query1, ( err: any, pedio: any ) => {
             if (err) {
                 console.log("No se puede seleccionar " + err)
@@ -231,10 +217,7 @@ Pedidoss.get('/ContaReg/:Id', (req: Request, res: Response) => {
 
              anterior = pedio[0].userconteo;
              var resultot = result - anterior;
-             console.log('resultot es: ' + resultot);
-
             if (resultot <= 0) {
-                console.log('El Resultado es 0');
                 const query2 = `SELECT userconteo FROM Conteos WHERE Iduser = ${ Id }`
                 Mysql.ejecutarQuery(query2, ( err: any, pedio: any[] ) => {
                     if (err) {
@@ -249,8 +232,7 @@ Pedidoss.get('/ContaReg/:Id', (req: Request, res: Response) => {
                     res.end()
                 });
             } else {
-                console.log('EL Resultado es mayor que 0');
-                const query3 = `UPDATE Conteos SET userconteo = ${ resultot } WHERE Iduser = ${ Id }`
+                      const query3 = `UPDATE Conteos SET userconteo = ${ resultot } WHERE Iduser = ${ Id }`
                 Mysql.ejecutarQuery(query3, ( err: any, pedio: object[] ) => {
                     if (err) {
                         console.log("No se puede Modificar el " + err)

@@ -9,6 +9,7 @@ const usuario = express_1.Router();
 usuario.post('/logUser', (req, res) => {
     var user = req.body.user;
     var password = req.body.password;
+    var id = req.params.id;
     const query = `SELECT * FROM usuario WHERE user = '${user}' AND password = '${password}'`;
     mysql_1.default.ejecutarQuery(query, (err, usuario) => {
         if (err) {
@@ -24,6 +25,9 @@ usuario.post('/logUser', (req, res) => {
             });
         }
     });
+    // const payload = { user, password };
+    // const server = Server.instance;
+    // server.io.in( id ).emit( 'mensaje-privado', payload );
 });
 usuario.get('/user', (req, res) => {
     const query = `SELECT * FROM usuario`;

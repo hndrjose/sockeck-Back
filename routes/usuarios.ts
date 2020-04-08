@@ -1,5 +1,6 @@
 
 import { Router, Request, Response } from 'express';
+import Server from '../classes/server';
 import Mysql from '../mysql/mysql';
 
 const usuario = Router();
@@ -8,6 +9,8 @@ const usuario = Router();
 usuario.post('/logUser', ( req: Request, res: Response  ) => {
     var user = req.body.user
     var password = req.body.password;
+
+    var id = req.params.id;
 
     const query = `SELECT * FROM usuario WHERE user = '${ user }' AND password = '${ password }'`;
 
@@ -25,6 +28,11 @@ usuario.post('/logUser', ( req: Request, res: Response  ) => {
         } 
 
     });
+
+    // const payload = { user, password };
+
+    // const server = Server.instance;
+    // server.io.in( id ).emit( 'mensaje-privado', payload );
 });
 
 usuario.get('/user', ( req: Request, res: Response  ) => {
